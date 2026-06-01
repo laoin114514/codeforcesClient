@@ -1,14 +1,14 @@
 # Codeforces SDK for Go
 
-Go SDK for the [Codeforces API](https://codeforces.com/apiHelp), covering all 16 official methods.
+[Codeforces API](https://codeforces.com/apiHelp) 的 Go SDK，覆盖全部 16 个官方接口。
 
-## Installation
+## 安装
 
 ```bash
 go get github.com/laoin114514/codeforcesSDK
 ```
 
-## Quick Start
+## 快速开始
 
 ```go
 package main
@@ -33,15 +33,15 @@ func main() {
 }
 ```
 
-## Authentication
+## 认证
 
-For authorized methods (like `UserFriends`), use a `Signer`:
+需要授权的接口（如 `UserFriends`）通过 `Signer` 传入 API Key：
 
 ```go
 client := cf.NewClient(cf.WithSigner(cf.NewStaticSigner("your-api-key", "your-secret")))
 ```
 
-For multi-user scenarios, use `PoolSigner` with context-based handle resolution:
+多用户场景使用 `PoolSigner`，通过 context 传递 handle：
 
 ```go
 signer := cf.NewPoolSigner(map[string]struct{ ApiKey, Secret string }{
@@ -53,18 +53,18 @@ ctx := cf.WithHandle(context.Background(), "user1")
 resp, err := client.UserFriends(ctx, &cf.UserFriendsParams{})
 ```
 
-## Options
+## 配置选项
 
-| Option | Description |
+| 选项 | 说明 |
 |--------|-------------|
-| `WithHTTPClient(client)` | Custom `*http.Client` |
-| `WithSigner(signer)` | API key signer |
-| `WithRateLimit(rps)` | Max requests per second |
-| `WithBaseURL(url)` | Custom API base URL |
+| `WithHTTPClient(client)` | 自定义 `*http.Client` |
+| `WithSigner(signer)` | API Key 签名器 |
+| `WithRateLimit(rps)` | 每秒最大请求数 |
+| `WithBaseURL(url)` | 自定义 API 地址 |
 
-## Error Handling
+## 错误处理
 
-Use `errors.As` to distinguish error types:
+使用 `errors.As` 区分错误类型：
 
 ```go
 resp, err := client.UserStatus(ctx, params)
@@ -72,18 +72,18 @@ var cfErr *cf.CFError
 if errors.As(err, &cfErr) {
     switch cfErr.Code {
     case cf.ErrAPI:
-        // Codeforces returned FAILED
+        // Codeforces 返回 FAILED
     case cf.ErrRateLimit:
-        // Rate limited
+        // 触发频率限制
     case cf.ErrAuth:
-        // Auth failed
+        // 认证失败
     }
 }
 ```
 
-## Raw Request
+## 原始请求
 
-For custom or new API endpoints:
+对于未封装的自定义请求：
 
 ```go
 body, err := client.RawRequest(ctx, "user.status", &cf.UserStatusParams{
@@ -91,11 +91,11 @@ body, err := client.RawRequest(ctx, "user.status", &cf.UserStatusParams{
 })
 ```
 
-## API Methods
+## API 方法
 
-| Category | Methods |
+| 分类 | 方法 |
 |----------|---------|
-| Blog Entry | `BlogEntryComments`, `BlogEntryView` |
+| BlogEntry | `BlogEntryComments`, `BlogEntryView` |
 | Contest | `ContestHacks`, `ContestList`, `ContestRatingChanges`, `ContestStandings`, `ContestStatus` |
 | ProblemSet | `ProblemsetProblems`, `ProblemsetRecentStatus` |
 | User | `UserBlogEntries`, `UserFriends`, `UserInfo`, `UserRatedList`, `UserRating`, `UserStatus`, `UserRecentActions` |
