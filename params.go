@@ -1,4 +1,4 @@
-package cfurlgenerator
+package codeforcessdk
 
 // ==================== Codeforces API 请求参数结构体 ====================
 

@@ -1,4 +1,4 @@
-package cfurlgenerator
+package codeforcessdk
 
 import (
 	"crypto/sha512"
