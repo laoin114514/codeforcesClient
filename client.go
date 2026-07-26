@@ -62,21 +62,30 @@ func NewClient(opts ...ClientOption) *Client {
 }
 
 // WithContext 返回 c 的浅拷贝，使用给定的 context。
-// 用于需要超时/取消控制的单次调用，避免每个方法都传 ctx。
+// 用于需要超时/取消控制的单次调用。
 func (c *Client) WithContext(ctx context.Context) *Client {
 	cc := *c
 	cc.ctx = ctx
 	return &cc
 }
 
+// SetContext 直接修改 c 的 context，后续调用都用新 ctx。
+func (c *Client) SetContext(ctx context.Context) {
+	c.ctx = ctx
+}
+
 // WithHandle 返回 c 的浅拷贝，在 context 中注入 handle 供 PoolSigner 查找凭据。
-// 调用认证接口前无需手动操作 context：
 //
 //	resp, err := client.WithHandle("alice").UserFriends(&cf.UserFriendsParams{})
 func (c *Client) WithHandle(handle string) *Client {
 	cc := *c
 	cc.ctx = WithHandle(c.ctx, handle)
 	return &cc
+}
+
+// SetHandle 直接修改 c 的 context 注入 handle，后续调用都用此身份。
+func (c *Client) SetHandle(handle string) {
+	c.ctx = WithHandle(c.ctx, handle)
 }
 
 // buildURL 构造完整的 API URL。
