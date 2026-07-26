@@ -27,19 +27,25 @@ func (r *RateLimiter) Wait(ctx context.Context) error {
 		return nil
 	}
 	r.mu.Lock()
-	elapsed := time.Since(r.last)
-	if elapsed < r.interval {
+	defer r.mu.Unlock()
+
+	for {
+		elapsed := time.Since(r.last)
+		if elapsed >= r.interval {
+			r.last = time.Now()
+			return nil
+		}
+		waitTime := r.interval - elapsed
 		r.mu.Unlock()
 		select {
-		case <-time.After(r.interval - elapsed):
+		case <-time.After(waitTime):
 		case <-ctx.Done():
+			r.mu.Lock()
 			return ctx.Err()
 		}
 		r.mu.Lock()
+		// Re-check: another goroutine may have passed through while we slept.
 	}
-	r.last = time.Now()
-	r.mu.Unlock()
-	return nil
 }
 
 func (r *RateLimiter) SetRate(rps int) {
