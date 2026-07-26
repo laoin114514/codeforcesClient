@@ -1,6 +1,6 @@
 //go:build integration
 
-package codeforcessdk
+package codeforcesClient
 
 import (
 	"context"

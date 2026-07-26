@@ -1,4 +1,4 @@
-package codeforcessdk
+package codeforcesClient
 
 import (
 	"context"
