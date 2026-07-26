@@ -19,6 +19,7 @@ type apiResponse struct {
 }
 
 type Client struct {
+	ctx        context.Context
 	httpClient *http.Client
 	signer     Signer
 	limiter    *internalhttp.RateLimiter
@@ -33,6 +34,14 @@ func NewClient(opts ...ClientOption) *Client {
 	}
 	c.transport = internalhttp.NewTransport(c.httpClient, c.limiter)
 	return c
+}
+
+// WithContext returns a shallow copy of c with the given context,
+// for per-call timeout/cancellation without threading ctx through every method.
+func (c *Client) WithContext(ctx context.Context) *Client {
+	cc := *c
+	cc.ctx = ctx
+	return &cc
 }
 
 func (c *Client) buildURL(ctx context.Context, method string, m map[string]any) (string, error) {
@@ -105,35 +114,35 @@ func (c *Client) doRequest(ctx context.Context, method string, paramStruct any, 
 	return nil
 }
 
-func (c *Client) RawRequest(ctx context.Context, method string, paramStruct any) ([]byte, error) {
+func (c *Client) RawRequest(method string, paramStruct any) ([]byte, error) {
 	m, err := params.Encode(paramStruct, nil)
 	if err != nil {
 		return nil, &CFError{Code: ErrInvalidParam, Message: "failed to encode params", Cause: err}
 	}
 
-	urlStr, err := c.buildURL(ctx, method, m)
+	urlStr, err := c.buildURL(c.ctx, method, m)
 	if err != nil {
 		return nil, err
 	}
 
-	return c.doHTTP(ctx, urlStr)
+	return c.doHTTP(c.ctx, urlStr)
 }
 
 // ==================== Blog Entry ====================
 
-func (c *Client) BlogEntryComments(ctx context.Context, entryID int) (*BlogEntryCommentsResponse, error) {
+func (c *Client) BlogEntryComments(entryID int) (*BlogEntryCommentsResponse, error) {
 	var resp BlogEntryCommentsResponse
 	params := &BlogEntryCommentsParams{BlogEntryID: entryID}
-	if err := c.doRequest(ctx, "blogEntry.comments", params, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "blogEntry.comments", params, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) BlogEntryView(ctx context.Context, entryID int) (*BlogEntryViewResponse, error) {
+func (c *Client) BlogEntryView(entryID int) (*BlogEntryViewResponse, error) {
 	var resp BlogEntryViewResponse
 	params := &BlogEntryViewParams{BlogEntryID: entryID}
-	if err := c.doRequest(ctx, "blogEntry.view", params, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "blogEntry.view", params, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -141,42 +150,42 @@ func (c *Client) BlogEntryView(ctx context.Context, entryID int) (*BlogEntryView
 
 // ==================== Contest ====================
 
-func (c *Client) ContestHacks(ctx context.Context, query *ContestHacksParams) (*ContestHacksResponse, error) {
+func (c *Client) ContestHacks(query *ContestHacksParams) (*ContestHacksResponse, error) {
 	var resp ContestHacksResponse
-	if err := c.doRequest(ctx, "contest.hacks", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "contest.hacks", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) ContestList(ctx context.Context, query *ContestListParams) (*ContestListResponse, error) {
+func (c *Client) ContestList(query *ContestListParams) (*ContestListResponse, error) {
 	var resp ContestListResponse
-	if err := c.doRequest(ctx, "contest.list", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "contest.list", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) ContestRatingChanges(ctx context.Context, contestID int) (*ContestRatingChangesResponse, error) {
+func (c *Client) ContestRatingChanges(contestID int) (*ContestRatingChangesResponse, error) {
 	var resp ContestRatingChangesResponse
 	params := &ContestRatingChangesParams{ContestID: contestID}
-	if err := c.doRequest(ctx, "contest.ratingChanges", params, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "contest.ratingChanges", params, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) ContestStandings(ctx context.Context, query *ContestStandingsParams) (*ContestStandingsResponse, error) {
+func (c *Client) ContestStandings(query *ContestStandingsParams) (*ContestStandingsResponse, error) {
 	var resp ContestStandingsResponse
-	if err := c.doRequest(ctx, "contest.standings", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "contest.standings", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) ContestStatus(ctx context.Context, query *ContestStatusParams) (*ContestStatusResponse, error) {
+func (c *Client) ContestStatus(query *ContestStatusParams) (*ContestStatusResponse, error) {
 	var resp ContestStatusResponse
-	if err := c.doRequest(ctx, "contest.status", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "contest.status", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -184,17 +193,17 @@ func (c *Client) ContestStatus(ctx context.Context, query *ContestStatusParams) 
 
 // ==================== ProblemSet ====================
 
-func (c *Client) ProblemsetProblems(ctx context.Context, query *ProblemsetProblemsParams) (*ProblemsetProblemsResponse, error) {
+func (c *Client) ProblemsetProblems(query *ProblemsetProblemsParams) (*ProblemsetProblemsResponse, error) {
 	var resp ProblemsetProblemsResponse
-	if err := c.doRequest(ctx, "problemset.problems", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "problemset.problems", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) ProblemsetRecentStatus(ctx context.Context, query *ProblemsetRecentStatusParams) (*ProblemsetRecentStatusResponse, error) {
+func (c *Client) ProblemsetRecentStatus(query *ProblemsetRecentStatusParams) (*ProblemsetRecentStatusResponse, error) {
 	var resp ProblemsetRecentStatusResponse
-	if err := c.doRequest(ctx, "problemset.recentStatus", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "problemset.recentStatus", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -202,58 +211,58 @@ func (c *Client) ProblemsetRecentStatus(ctx context.Context, query *ProblemsetRe
 
 // ==================== User ====================
 
-func (c *Client) UserBlogEntries(ctx context.Context, query *UserBlogEntriesParams) (*UserBlogEntriesResponse, error) {
+func (c *Client) UserBlogEntries(query *UserBlogEntriesParams) (*UserBlogEntriesResponse, error) {
 	var resp UserBlogEntriesResponse
-	if err := c.doRequest(ctx, "user.blogEntries", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "user.blogEntries", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) UserFriends(ctx context.Context, query *UserFriendsParams) (*UserFriendsResponse, error) {
+func (c *Client) UserFriends(query *UserFriendsParams) (*UserFriendsResponse, error) {
 	var resp UserFriendsResponse
-	if err := c.doRequest(ctx, "user.friends", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "user.friends", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) UserInfo(ctx context.Context, query *UserInfoParams) (*UserInfoResponse, error) {
+func (c *Client) UserInfo(query *UserInfoParams) (*UserInfoResponse, error) {
 	var resp UserInfoResponse
-	if err := c.doRequest(ctx, "user.info", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "user.info", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) UserRatedList(ctx context.Context, query *UserRatedListParams) (*UserRatedListResponse, error) {
+func (c *Client) UserRatedList(query *UserRatedListParams) (*UserRatedListResponse, error) {
 	var resp UserRatedListResponse
-	if err := c.doRequest(ctx, "user.ratedList", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "user.ratedList", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) UserRating(ctx context.Context, query *UserRatingParams) (*UserRatingResponse, error) {
+func (c *Client) UserRating(query *UserRatingParams) (*UserRatingResponse, error) {
 	var resp UserRatingResponse
-	if err := c.doRequest(ctx, "user.rating", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "user.rating", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) UserStatus(ctx context.Context, query *UserStatusParams) (*UserStatusResponse, error) {
+func (c *Client) UserStatus(query *UserStatusParams) (*UserStatusResponse, error) {
 	var resp UserStatusResponse
-	if err := c.doRequest(ctx, "user.status", query, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "user.status", query, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
 }
 
-func (c *Client) UserRecentActions(ctx context.Context, maxCount int) (*RecentActionsResponse, error) {
+func (c *Client) UserRecentActions(maxCount int) (*RecentActionsResponse, error) {
 	var resp RecentActionsResponse
 	params := &RecentActionsParams{MaxCount: maxCount}
-	if err := c.doRequest(ctx, "user.recentActions", params, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "user.recentActions", params, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

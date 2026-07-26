@@ -14,7 +14,7 @@ func TestIntegrationUserInfo(t *testing.T) {
 	defer cancel()
 
 	client := NewClient()
-	resp, err := client.UserInfo(ctx, &UserInfoParams{Handles: "tourist"})
+	resp, err := client.WithContext(ctx).UserInfo(&UserInfoParams{Handles: "tourist"})
 	if err != nil {
 		t.Fatalf("UserInfo failed: %v", err)
 	}
@@ -31,7 +31,7 @@ func TestIntegrationUserRating(t *testing.T) {
 	defer cancel()
 
 	client := NewClient()
-	resp, err := client.UserRating(ctx, &UserRatingParams{Handle: "tourist"})
+	resp, err := client.WithContext(ctx).UserRating(&UserRatingParams{Handle: "tourist"})
 	if err != nil {
 		t.Fatalf("UserRating failed: %v", err)
 	}
@@ -42,7 +42,7 @@ func TestIntegrationContestList(t *testing.T) {
 	defer cancel()
 
 	client := NewClient()
-	resp, err := client.ContestList(ctx, &ContestListParams{Gym: false})
+	resp, err := client.WithContext(ctx).ContestList(&ContestListParams{Gym: false})
 	if err != nil {
 		t.Fatalf("ContestList failed: %v", err)
 	}
@@ -61,7 +61,7 @@ func TestIntegrationWithAuth(t *testing.T) {
 	defer cancel()
 
 	client := NewClient(WithSigner(NewStaticSigner(apiKey, secret)))
-	resp, err := client.UserFriends(ctx, &UserFriendsParams{})
+	resp, err := client.WithContext(ctx).UserFriends(&UserFriendsParams{})
 	if err != nil {
 		t.Fatalf("UserFriends failed: %v", err)
 	}

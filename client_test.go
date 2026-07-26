@@ -128,7 +128,7 @@ func TestRawRequest(t *testing.T) {
 	defer srv.Close()
 
 	client := NewClient(WithBaseURL(srv.URL+"/"), WithRateLimit(0))
-	body, err := client.RawRequest(context.Background(), "user.info", &UserInfoParams{Handles: "tourist"})
+	body, err := client.RawRequest("user.info", &UserInfoParams{Handles: "tourist"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -139,7 +139,7 @@ func TestRawRequest(t *testing.T) {
 
 func TestRawRequestAuthError(t *testing.T) {
 	client := NewClient(WithSigner(NewStaticSigner("", "")))
-	_, err := client.RawRequest(context.Background(), "user.friends", &UserFriendsParams{})
+	_, err := client.RawRequest("user.friends", &UserFriendsParams{})
 
 	var cfErr *CFError
 	if !errors.As(err, &cfErr) {

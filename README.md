@@ -14,14 +14,13 @@ go get github.com/laoin114514/codeforcesSDK
 package main
 
 import (
-    "context"
     "fmt"
     cf "github.com/laoin114514/codeforcesSDK"
 )
 
 func main() {
     client := cf.NewClient()
-    resp, err := client.UserInfo(context.Background(), &cf.UserInfoParams{
+    resp, err := client.UserInfo(&cf.UserInfoParams{
         Handles: "tourist;Petr",
     })
     if err != nil {
@@ -50,7 +49,7 @@ signer := cf.NewPoolSigner(map[string]struct{ ApiKey, Secret string }{
 })
 client := cf.NewClient(cf.WithSigner(signer))
 ctx := cf.WithHandle(context.Background(), "user1")
-resp, err := client.UserFriends(ctx, &cf.UserFriendsParams{})
+resp, err := client.WithContext(ctx).UserFriends(&cf.UserFriendsParams{})
 ```
 
 ## 配置选项
@@ -67,7 +66,7 @@ resp, err := client.UserFriends(ctx, &cf.UserFriendsParams{})
 使用 `errors.As` 区分错误类型：
 
 ```go
-resp, err := client.UserStatus(ctx, params)
+resp, err := client.UserStatus(params)
 var cfErr *cf.CFError
 if errors.As(err, &cfErr) {
     switch cfErr.Code {
@@ -86,7 +85,7 @@ if errors.As(err, &cfErr) {
 对于未封装的自定义请求：
 
 ```go
-body, err := client.RawRequest(ctx, "user.status", &cf.UserStatusParams{
+body, err := client.RawRequest("user.status", &cf.UserStatusParams{
     Handle: "tourist",
 })
 ```

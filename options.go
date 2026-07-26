@@ -1,6 +1,7 @@
 package codeforcesClient
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -35,9 +36,16 @@ func WithBaseURL(url string) ClientOption {
 	}
 }
 
+func WithContext(ctx context.Context) ClientOption {
+	return func(c *Client) {
+		c.ctx = ctx
+	}
+}
+
 func defaultClient() *Client {
 	hc := &http.Client{Timeout: 10 * time.Second}
 	return &Client{
+		ctx:        context.Background(),
 		httpClient: hc,
 		baseURL:    "https://codeforces.com/api/",
 		limiter:    internalhttp.NewRateLimiter(0),
