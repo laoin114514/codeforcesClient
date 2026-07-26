@@ -1,3 +1,4 @@
+// Package params 提供将 Go struct 编码为 Codeforces API 查询参数的工具。
 package params
 
 import (
@@ -7,6 +8,8 @@ import (
 	"strings"
 )
 
+// Encode 通过 JSON 往返将 struct 转换为 map[string]any。
+// 可选参数 extra 会在编码后合并进去。
 func Encode(v any, extra map[string]any) (map[string]any, error) {
 	data, err := json.Marshal(v)
 	if err != nil {
@@ -22,6 +25,8 @@ func Encode(v any, extra map[string]any) (map[string]any, error) {
 	return result, nil
 }
 
+// ToOrderedString 将 map 转为按 key 字母序排列的 key=value 查询串。
+// 用于签名时保证参数顺序一致。
 func ToOrderedString(m map[string]any) string {
 	if len(m) == 0 {
 		return ""

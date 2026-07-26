@@ -1,7 +1,9 @@
 package codeforcesClient
 
 // ==================== Blog Entry ====================
+// API: blogEntry.comments, blogEntry.view
 
+// BlogEntryCommentsParams 获取博客评论的参数。
 type BlogEntryCommentsParams struct {
 	BlogEntryID int `json:"blogEntryId"`
 }
@@ -23,7 +25,9 @@ type BlogEntryViewResponse struct {
 }
 
 // ==================== Contest ====================
+// API: contest.hacks, contest.list, contest.ratingChanges, contest.standings, contest.status
 
+// ContestHacksParams 获取比赛 hack 记录的参数。
 type ContestHacksParams struct {
 	ContestID int  `json:"contestId"`
 	AsManager bool `json:"asManager,omitempty"`
@@ -93,7 +97,9 @@ type ContestStatusResponse struct {
 }
 
 // ==================== ProblemSet ====================
+// API: problemset.problems, problemset.recentStatus
 
+// ProblemsetProblemsParams 获取题库题目的参数。
 type ProblemsetProblemsParams struct {
 	Tags           string `json:"tags,omitempty"`
 	ProblemsetName string `json:"problemsetName,omitempty"`
@@ -122,7 +128,9 @@ type ProblemsetRecentStatusResponse struct {
 }
 
 // ==================== User ====================
+// API: user.blogEntries, user.friends, user.info, user.ratedList, user.rating, user.status, user.recentActions
 
+// UserBlogEntriesParams 获取用户博客的参数。
 type UserBlogEntriesParams struct {
 	Handle string `json:"handle"`
 }
@@ -198,8 +206,9 @@ type RecentActionsResponse struct {
 	Result  []*RecentAction `json:"result"`
 }
 
-// ==================== Codeforces Business Objects ====================
+// ==================== Codeforces 业务对象 ====================
 
+// User 表示 Codeforces 用户信息。
 type User struct {
 	Handle                  string `json:"handle"`
 	Email                   string `json:"email,omitempty"`
@@ -222,6 +231,7 @@ type User struct {
 	TitlePhoto              string `json:"titlePhoto"`
 }
 
+// RatingChange 表示一次 Rating 变化记录。
 type RatingChange struct {
 	ContestID               int    `json:"contestId"`
 	ContestName             string `json:"contestName"`
@@ -232,6 +242,7 @@ type RatingChange struct {
 	NewRating               int    `json:"newRating"`
 }
 
+// Party 表示参赛方（个人或队伍）。
 type Party struct {
 	ContestID        int       `json:"contestId,omitempty"`
 	Members          []*Member `json:"members"`
@@ -248,6 +259,7 @@ type Member struct {
 	Name   string `json:"name,omitempty"`
 }
 
+// Problem 表示一道题目。
 type Problem struct {
 	ContestID      int      `json:"contestId,omitempty"`
 	ProblemsetName string   `json:"problemsetName,omitempty"`
@@ -273,6 +285,7 @@ type ProblemResult struct {
 	BestSubmissionTimeSeconds int64   `json:"bestSubmissionTimeSeconds,omitempty"`
 }
 
+// Submission 表示一次提交记录。
 type Submission struct {
 	ID                  int64     `json:"id"`
 	ContestID           int       `json:"contestId,omitempty"`
@@ -306,6 +319,7 @@ type JudgeProtocol struct {
 	Verdict  string `json:"verdict"`
 }
 
+// BlogEntry 表示一篇博客文章。
 type BlogEntry struct {
 	ID                      int      `json:"id"`
 	OriginalLocale          string   `json:"originalLocale"`
@@ -336,6 +350,7 @@ type RecentAction struct {
 	Comment     *Comment   `json:"comment,omitempty"`
 }
 
+// Contest 表示一场比赛。
 type Contest struct {
 	ID                  int    `json:"id"`
 	Name                string `json:"name"`
@@ -356,6 +371,7 @@ type Contest struct {
 	Season              string `json:"season,omitempty"`
 }
 
+// RanklistRow 表示排行榜中的一行（一个参赛方）。
 type RanklistRow struct {
 	Party                      *Party           `json:"party"`
 	Rank                       int              `json:"rank"`
