@@ -382,3 +382,37 @@ type RanklistRow struct {
 	ProblemResults             []*ProblemResult `json:"problemResults"`
 	LastSubmissionTimeSeconds  int64            `json:"lastSubmissionTimeSeconds,omitempty"`
 }
+
+// ==================== Group ====================
+// API: group.isManager
+
+// GroupIsManagerParams 检查用户是否为组 manager 的参数。
+type GroupIsManagerParams struct {
+	GroupCode string `json:"groupCode"` // 组代码
+	Handles   string `json:"handles"`   // 要检查的 handle，分号分隔
+}
+
+// GroupIsManagerResponse group.isManager 的响应。
+type GroupIsManagerResponse struct {
+	Status  string   `json:"status"`
+	Comment string   `json:"comment,omitempty"`
+	Result  []string `json:"result"` // 是 manager 的 handle 列表
+}
+
+// ==================== System ====================
+// API: system.status
+
+// SystemStatusResponse system.status 的响应。
+type SystemStatusResponse struct {
+	Status  string       `json:"status"`
+	Comment string       `json:"comment,omitempty"`
+	Result  *SystemState `json:"result"`
+}
+
+// SystemState 系统运行状态。
+type SystemState struct {
+	LangVersion string  `json:"langVersion"`
+	Testset     string  `json:"testset"`
+	RPS         float64 `json:"RPS"`
+	Now         int64   `json:"now"`
+}

@@ -319,12 +319,35 @@ func (c *Client) UserStatus(query *UserStatusParams) (*UserStatusResponse, error
 	return &resp, nil
 }
 
-// UserRecentActions 获取用户最近的动态（博客、评论等）。
-// API: user.recentActions
-func (c *Client) UserRecentActions(maxCount int) (*RecentActionsResponse, error) {
+// RecentActions 获取所有用户最近的动态（博客、评论等）。
+// API: recentActions
+func (c *Client) RecentActions(maxCount int) (*RecentActionsResponse, error) {
 	var resp RecentActionsResponse
 	params := &RecentActionsParams{MaxCount: maxCount}
-	if err := c.doRequest(c.ctx, "user.recentActions", params, nil, &resp); err != nil {
+	if err := c.doRequest(c.ctx, "recentActions", params, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// ==================== 其他 ====================
+
+// GroupIsManager 检查指定用户是否为某个组的 manager。
+// 需要认证。API: group.isManager
+func (c *Client) GroupIsManager(groupCode, handles string) (*GroupIsManagerResponse, error) {
+	var resp GroupIsManagerResponse
+	params := &GroupIsManagerParams{GroupCode: groupCode, Handles: handles}
+	if err := c.doRequest(c.ctx, "group.isManager", params, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// SystemStatus 获取 Codeforces 系统实时健康状态和吞吐量指标。
+// API: system.status
+func (c *Client) SystemStatus() (*SystemStatusResponse, error) {
+	var resp SystemStatusResponse
+	if err := c.doRequest(c.ctx, "system.status", nil, nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
