@@ -75,7 +75,7 @@ resp, _ := client.UserFriends(&cf.UserFriendsParams{})
 
 ### 多用户：PoolSigner
 
-通过 context 传递 handle 来切换用户凭据：
+通过 `client.WithHandle(handle)` 切换用户凭据：
 
 ```go
 signer := cf.NewPoolSigner(map[string]struct{ ApiKey, Secret string }{
@@ -85,8 +85,10 @@ signer := cf.NewPoolSigner(map[string]struct{ ApiKey, Secret string }{
 client := cf.NewClient(cf.WithSigner(signer))
 
 // 以 user1 身份调用
-ctx := cf.WithHandle(context.Background(), "user1")
-resp, _ := client.WithContext(ctx).UserFriends(&cf.UserFriendsParams{})
+resp, _ := client.WithHandle("user1").UserFriends(&cf.UserFriendsParams{})
+
+// 以 user2 身份调用
+resp, _ = client.WithHandle("user2").UserFriends(&cf.UserFriendsParams{})
 ```
 
 ---

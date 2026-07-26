@@ -6,13 +6,17 @@
 //	client := codeforcesClient.NewClient()
 //	resp, _ := client.UserInfo(&codeforcesClient.UserInfoParams{Handles: "tourist"})
 //
-// 需要认证的接口，设置 Signer 并用 WithHandle 指定用户：
+// 需要认证的接口，设置 Signer 并通过 WithHandle 指定用户：
 //
 //	client := codeforcesClient.NewClient(
 //	    codeforcesClient.WithSigner(codeforcesClient.NewStaticSigner(key, secret)),
 //	)
-//	ctx := codeforcesClient.WithHandle(context.Background(), "myhandle")
-//	resp, _ := client.WithContext(ctx).UserFriends(&codeforcesClient.UserFriendsParams{})
+//	resp, _ := client.UserFriends(&codeforcesClient.UserFriendsParams{})
+//
+// 多用户用 PoolSigner + WithHandle：
+//
+//	client.WithHandle("alice").UserFriends(&codeforcesClient.UserFriendsParams{})
+//	client.WithHandle("bob").UserFriends(&codeforcesClient.UserFriendsParams{})
 package codeforcesClient
 
 import (
@@ -62,6 +66,16 @@ func NewClient(opts ...ClientOption) *Client {
 func (c *Client) WithContext(ctx context.Context) *Client {
 	cc := *c
 	cc.ctx = ctx
+	return &cc
+}
+
+// WithHandle 返回 c 的浅拷贝，在 context 中注入 handle 供 PoolSigner 查找凭据。
+// 调用认证接口前无需手动操作 context：
+//
+//	resp, err := client.WithHandle("alice").UserFriends(&cf.UserFriendsParams{})
+func (c *Client) WithHandle(handle string) *Client {
+	cc := *c
+	cc.ctx = WithHandle(c.ctx, handle)
 	return &cc
 }
 

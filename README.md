@@ -48,8 +48,8 @@ signer := cf.NewPoolSigner(map[string]struct{ ApiKey, Secret string }{
     "user2": {ApiKey: "...", Secret: "..."},
 })
 client := cf.NewClient(cf.WithSigner(signer))
-ctx := cf.WithHandle(context.Background(), "user1")
-resp, err := client.WithContext(ctx).UserFriends(&cf.UserFriendsParams{})
+resp, err := client.WithHandle("user1").UserFriends(&cf.UserFriendsParams{})
+resp, err = client.WithHandle("user2").UserFriends(&cf.UserFriendsParams{})
 ```
 
 ## 配置选项
