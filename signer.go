@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/laoin114514/codeforcesSDK/internal/params"
-	"github.com/laoin114514/codeforcesSDK/internal/signature"
+	"github.com/laoin114514/codeforcesClient/internal/params"
+	"github.com/laoin114514/codeforcesClient/internal/signature"
 )
 
 // Signer 对 API 请求进行签名，注入 apiKey、time 和 apiSig 参数。

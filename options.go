@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	internalhttp "github.com/laoin114514/codeforcesSDK/internal/http"
+	internalhttp "github.com/laoin114514/codeforcesClient/internal/http"
 )
 
 // ClientOption 是函数式选项，用于配置 Client。

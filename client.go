@@ -22,8 +22,8 @@ import (
 	"io"
 	"net/http"
 
-	internalhttp "github.com/laoin114514/codeforcesSDK/internal/http"
-	"github.com/laoin114514/codeforcesSDK/internal/params"
+	internalhttp "github.com/laoin114514/codeforcesClient/internal/http"
+	"github.com/laoin114514/codeforcesClient/internal/params"
 )
 
 // apiResponse is the standard Codeforces API response envelope.

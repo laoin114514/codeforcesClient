@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-go get github.com/laoin114514/codeforcesSDK
+go get github.com/laoin114514/codeforcesClient
 ```
 
 ## 快速开始
@@ -15,7 +15,7 @@ package main
 
 import (
     "fmt"
-    cf "github.com/laoin114514/codeforcesSDK"
+    cf "github.com/laoin114514/codeforcesClient"
 )
 
 func main() {
