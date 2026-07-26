@@ -1,4 +1,4 @@
-// Package codeforcesClient 是 Codeforces API 的 Go SDK，
+// Package codeforcesClient 是 Codeforces API 的 Go Client
 // 覆盖全部 16 个官方接口，分为 BlogEntry、Contest、ProblemSet、User 四类。
 //
 // 快速开始：
@@ -42,12 +42,12 @@ type apiResponse struct {
 // Client 是 Codeforces API 客户端。
 // 使用 NewClient 创建，零值不可用。
 type Client struct {
-	ctx        context.Context          // 每个 client 的默认 context
-	httpClient *http.Client             // 底层 HTTP 客户端
-	signer     Signer                   // 可选的请求签名器，用于认证接口
+	ctx        context.Context           // 每个 client 的默认 context
+	httpClient *http.Client              // 底层 HTTP 客户端
+	signer     Signer                    // 可选的请求签名器，用于认证接口
 	limiter    *internalhttp.RateLimiter // 限流器，0 = 不限流
-	baseURL    string                   // API 基础地址
-	transport  *internalhttp.Transport  // 带重试和限流的 HTTP 传输层
+	baseURL    string                    // API 基础地址
+	transport  *internalhttp.Transport   // 带重试和限流的 HTTP 传输层
 }
 
 // NewClient 创建 Client，可传入函数式选项进行配置。

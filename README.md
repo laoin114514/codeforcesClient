@@ -1,6 +1,6 @@
-# Codeforces SDK for Go
+# Codeforces Client for Go
 
-[Codeforces API](https://codeforces.com/apiHelp) 的 Go SDK，覆盖全部 16 个官方接口。
+[Codeforces API](https://codeforces.com/apiHelp) 的 Go Client，覆盖全部 16 个官方接口。
 
 ## 安装
 
@@ -97,4 +97,9 @@ body, err := client.RawRequest("user.status", &cf.UserStatusParams{
 | BlogEntry | `BlogEntryComments`, `BlogEntryView` |
 | Contest | `ContestHacks`, `ContestList`, `ContestRatingChanges`, `ContestStandings`, `ContestStatus` |
 | ProblemSet | `ProblemsetProblems`, `ProblemsetRecentStatus` |
-| User | `UserBlogEntries`, `UserFriends`, `UserInfo`, `UserRatedList`, `UserRating`, `UserStatus`, `UserRecentActions` |
+| User | `UserBlogEntries`, `UserFriends`, `UserInfo`, `UserRatedList`, `UserRating`, `UserStatus` |
+| 其他 | `RecentActions`, `GroupIsManager`, `SystemStatus` |
+
+## 开源协议
+
+MIT License — 详见 [LICENSE](LICENSE)

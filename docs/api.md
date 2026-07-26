@@ -1,6 +1,6 @@
-# Codeforces Go SDK API 文档
+# Codeforces Go API 文档
 
-Codeforces API 的 Go SDK，覆盖全部 18 个官方接口。
+Codeforces API 的 Go Client，覆盖全部 18 个官方接口。
 
 ## 安装
 
